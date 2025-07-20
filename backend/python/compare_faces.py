@@ -10,7 +10,7 @@ import numpy as np
 import face_recognition
 import os
 
-def compare_face_embeddings(embedding1_path, embedding2_path, tolerance=0.6):
+def compare_face_embeddings(embedding1_path, embedding2_path, tolerance=0.5):
     """
     Compare two face embeddings and determine if they match
     
@@ -62,7 +62,7 @@ def compare_face_embeddings(embedding1_path, embedding2_path, tolerance=0.6):
         distance = face_recognition.face_distance([embedding1], embedding2)[0]
         
         # Determine if faces match based on tolerance
-        is_match = distance <= tolerance
+        is_match = distance < tolerance
         
         return {
             "success": True,
@@ -94,7 +94,7 @@ def main():
     
     embedding1_path = sys.argv[1]
     embedding2_path = sys.argv[2]
-    tolerance = float(sys.argv[3]) if len(sys.argv) == 4 else 0.6
+    tolerance = float(sys.argv[3]) if len(sys.argv) == 4 else 0.5
     
     result = compare_face_embeddings(embedding1_path, embedding2_path, tolerance)
     

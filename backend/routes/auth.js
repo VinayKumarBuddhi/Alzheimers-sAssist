@@ -121,64 +121,94 @@ router.post('/login', async (req, res) => {
 // Login with face recognition
 router.post('/login-face', async (req, res) => {
   try {
+    console.log('[login-face] Request received');
     const { faceImage } = req.body;
-
+    
     if (!faceImage) {
+      console.log('[login-face] No face image provided');
       return res.status(400).json({
         success: false,
         message: 'Face image is required'
       });
     }
-
+    console.log('[login-face] Face image received');
     // Generate face embedding for the provided image
     const faceEmbedding = await generateFaceEmbedding(faceImage);
     if (!faceEmbedding) {
+      console.log('[login-face] Could not generate embedding');
       return res.status(400).json({
         success: false,
         message: 'Could not detect face in the image. Please try again.'
       });
     }
+    console.log('[login-face] Face embedding generated');
 
-    // Find user by face (this will use Python face recognition)
-    const user = await User.findOne({ isActive: true });
-    if (!user) {
+    // Find all active users
+    const users = await User.find({ isActive: true });
+    if (!users || users.length === 0) {
+      console.log('[login-face] No active users found');
+      return res.status(401).json({
+        success: false,
+        message: 'No active users found'
+      });
+    }
+    console.log(`[login-face] Found ${users.length} active users`);
+
+    // Compare faces using Python script for each user
+    const { compareFaces } = require('../utils/faceRecognition');
+    let matchedUser = null;
+    for (const user of users) {
+      if (user.faceEmbedding && user.faceEmbedding.length === 128) {
+        console.log(`[login-face] Comparing with user: ${user.username} (${user._id})`);
+        const comparison = await compareFaces(user.faceEmbedding, faceEmbedding, 0.5); // Set tolerance to 0.5
+        if (comparison) {
+          console.log(`[login-face] Comparison result for ${user.username}:`, comparison);
+        } else {
+          console.log(`[login-face] Comparison failed for ${user.username}`);
+        }
+        if (comparison && comparison.is_match) {
+          matchedUser = user;
+          console.log(`[login-face] Match found: ${user.username}`);
+          break;
+        }
+      } else {
+        console.log(`[login-face] User ${user.username} has invalid or missing face embedding`);
+      }
+    }
+
+
+    if (!matchedUser) {
+      console.log('[login-face] No matching user found');
       return res.status(401).json({
         success: false,
         message: 'No matching user found'
       });
     }
 
-    // Compare faces using Python script
-    const { compareFaces } = require('../utils/faceRecognition');
-    const isFaceMatch = await compareFaces(user.faceEmbedding, faceEmbedding);
-    
-    if (!isFaceMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Face not recognized. Please try again.'
-      });
-    }
 
     // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    matchedUser.lastLogin = new Date();
+    await matchedUser.save();
+    console.log(`[login-face] Last login updated for ${matchedUser.username}`);
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: matchedUser._id },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE }
     );
+    console.log(`[login-face] JWT token generated for ${matchedUser.username}`);
 
     res.json({
       success: true,
       message: 'Face login successful',
       token,
-      user: user.getPublicProfile()
+      user: matchedUser.getPublicProfile()
     });
+    console.log('[login-face] Response sent');
 
   } catch (error) {
-    console.error('Face login error:', error);
+    console.error('[login-face] Face login error:', error);
     res.status(500).json({
       success: false,
       message: 'Face login failed',
@@ -186,6 +216,8 @@ router.post('/login-face', async (req, res) => {
     });
   }
 });
+
+
 
 // Get current user profile
 router.get('/profile', auth, async (req, res) => {
@@ -204,11 +236,11 @@ router.get('/profile', auth, async (req, res) => {
   }
 });
 
+
 // Update user profile
 router.put('/profile', auth, async (req, res) => {
   try {
     const { email, fullName, dateOfBirth, emergencyContact } = req.body;
-    
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({
@@ -216,6 +248,7 @@ router.put('/profile', auth, async (req, res) => {
         message: 'User not found'
       });
     }
+
 
     // Update fields
     if (email) user.email = email;
@@ -240,5 +273,6 @@ router.put('/profile', auth, async (req, res) => {
     });
   }
 });
+
 
 module.exports = router; 

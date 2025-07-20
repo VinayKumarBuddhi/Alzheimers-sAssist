@@ -89,7 +89,7 @@ const generateFaceEmbedding = async (faceImage) => {
  * @param {number} tolerance - Matching tolerance (default: 0.6)
  * @returns {Promise<Object|null>} - Match result with score or null
  */
-const compareFaces = async (embedding1, embedding2, tolerance = 0.6) => {
+const compareFaces = async (embedding1, embedding2, tolerance = 0.5) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Create temporary files for embeddings
