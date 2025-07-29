@@ -17,7 +17,7 @@ def compare_face_embeddings(embedding1_path, embedding2_path, tolerance=0.5):
     Args:
         embedding1_path (str): Path to first embedding JSON file
         embedding2_path (str): Path to second embedding JSON file
-        tolerance (float): Matching tolerance (default: 0.6)
+        tolerance (float): Matching tolerance (default: 0.5)
         
     Returns:
         dict: JSON response with comparison result

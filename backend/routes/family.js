@@ -81,6 +81,7 @@ router.post('/retrieve', auth, async (req, res) => {
         message: 'Face image is required'
       });
     }
+    console.log("face image received");
 
     // Generate face embedding for the provided image
     const faceEmbedding = await generateFaceEmbedding(faceImage);
@@ -90,6 +91,7 @@ router.post('/retrieve', auth, async (req, res) => {
         message: 'Could not detect face in the image. Please try again.'
       });
     }
+    console.log("face embedding generated");
 
     // Get all family members for the user
     const familyMembers = await FamilyMember.find({ userId, isActive: true });
@@ -100,20 +102,26 @@ router.post('/retrieve', auth, async (req, res) => {
         message: 'No family members found'
       });
     }
+    console.log(familyMembers.length, "family members found");
 
     // Find matching family member using Python face recognition
     let bestMatch = null;
-    let bestScore = 0.6; // Minimum threshold for face matching
-
+    let bestScore = 0.5; // Minimum threshold for face matching
+    
     for (const member of familyMembers) {
+      console.log(`Comparing with member: ${member._id}, name: ${member.name}`);
       const isMatch = await compareFaces(member.faceEmbedding, faceEmbedding);
-      if (isMatch && isMatch.score > bestScore) {
+      console.log(`Comparison result for member ${member._id}:`, isMatch);
+      if (isMatch.similarity_score > bestScore) {
+        console.log("found similar face",isMatch.similarity_score);
         bestMatch = member;
-        bestScore = isMatch.score;
+        bestScore = isMatch.similarity_score;
+        console.log(`New best match: ${member._id} with score: ${isMatch.similarity_score}`);
       }
     }
 
-    if (!bestMatch) {
+    if (bestMatch==null) {
+      console.log('No matching family member found');
       return res.status(404).json({
         success: false,
         message: 'No matching family member found'
@@ -121,6 +129,7 @@ router.post('/retrieve', auth, async (req, res) => {
     }
 
     // Update last seen
+    console.log(`Best match found: ${bestMatch._id}, updating lastSeen.`);
     bestMatch.lastSeen = new Date();
     await bestMatch.save();
 

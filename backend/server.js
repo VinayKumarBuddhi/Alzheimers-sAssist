@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config({ path: './config.env' });
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const familyRoutes = require('./routes/family');
@@ -50,6 +51,16 @@ app.use('/api/family', familyRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Alzheimer\'s Assist Backend is running' });
 });
+
+// code for production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
+  });
+}
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

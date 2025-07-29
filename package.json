@@ -1,0 +1,20 @@
+{
+  "name": "alzheimers-assist",
+  "version": "1.0.0",
+  "description": "Welcome to **Alzheimer’s Assist** – an innovative, AI-powered platform designed to support individuals with Alzheimer’s and their families. This project combines facial recognition, emergency contact management, and a user-friendly dashboard to provide safety, connection, and peace of mind.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VinayKumarBuddhi/Alzheimers-sAssist.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VinayKumarBuddhi/Alzheimers-sAssist/issues"
+  },
+  "homepage": "https://github.com/VinayKumarBuddhi/Alzheimers-sAssist#readme"
+}
