@@ -1,18 +1,6 @@
 import React, { useRef, useState } from 'react';
 import API_BASE_URL from '../config/api';
 
-const mockResult = {
-  found: true,
-  faceImage: 'https://randomuser.me/api/portraits/men/1.jpg',
-  name: 'John Doe',
-  relation: 'Son',
-  address: '123 Main St',
-  isClose: true,
-  mobile: '1234567890',
-  additionalInfo: 'Likes cricket',
-  importantNotes: 'Visits every Sunday',
-};
-
 const RetrieveFace = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);

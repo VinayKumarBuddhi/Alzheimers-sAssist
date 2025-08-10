@@ -8,14 +8,12 @@ import Navbar from './components/Navbar';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
 
   // On mount, check for token in localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
     if (storedToken && storedUser) {
-      setToken(storedToken);
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
@@ -24,7 +22,6 @@ function App() {
   // On login/register success
   const handleAuthSuccess = (token, user) => {
     setIsAuthenticated(true);
-    setToken(token);
     setUser(user);
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
@@ -33,7 +30,6 @@ function App() {
   // Logout
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');

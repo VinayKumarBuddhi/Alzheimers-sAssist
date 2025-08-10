@@ -1,31 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import API_BASE_URL from '../config/api';
 
-const mockFaces = [
-  {
-    _id: '1',
-    name: 'John Doe',
-    relation: 'Son',
-    address: '123 Main St',
-    isClose: true,
-    faceImage: 'https://randomuser.me/api/portraits/men/1.jpg',
-    mobile: '1234567890',
-    additionalInfo: 'Likes cricket',
-    importantNotes: 'Visits every Sunday',
-  },
-  {
-    _id: '2',
-    name: 'Jane Smith',
-    relation: 'Daughter',
-    address: '456 Elm St',
-    isClose: false,
-    faceImage: 'https://randomuser.me/api/portraits/women/2.jpg',
-    mobile: '9876543210',
-    additionalInfo: 'Brings flowers',
-    importantNotes: 'Allergic to peanuts',
-  },
-];
-
 const AllFaces = () => {
   const [faces, setFaces] = useState([]);
   const [loading, setLoading] = useState(true);
