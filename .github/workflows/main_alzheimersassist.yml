@@ -33,31 +33,11 @@ jobs:
           npm install
           npm run build --if-present
       
-      - name: Prepare deployment content (minimal)
-        shell: pwsh
-        run: |
-          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue release
-          New-Item -ItemType Directory -Path release | Out-Null
-          Copy-Item web.config release\ -Force
-          New-Item -ItemType Directory -Path release\frontend\build | Out-Null
-          robocopy frontend\build release\frontend\build /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
-          New-Item -ItemType Directory -Path release\backend | Out-Null
-          robocopy backend release\backend /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
-          # Optionally include root package.json for reference
-          if (Test-Path package.json) { Copy-Item package.json release\ -Force }
-          if (Test-Path backend\\config.env) { Copy-Item backend\\config.env release\\backend\\ -Force }
-
-      - name: Create deployment zip
-        shell: pwsh
-        run: |
-          if (Test-Path package.zip) { Remove-Item package.zip -Force }
-          Compress-Archive -Path release\* -DestinationPath package.zip
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: package.zip
+          path: .
 
   deploy:
     runs-on:  windows-2022
@@ -85,7 +65,7 @@ jobs:
         with:
           app-name: 'AlzheimersAssist'
           slot-name: 'Production'
-          package: package.zip
+          package: .
 
           
 
