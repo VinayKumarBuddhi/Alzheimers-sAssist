@@ -65,8 +65,9 @@ jobs:
         with:
           app-name: 'AlzheimersAssist'
           slot-name: 'Production'
-          package: .
+          package: ./build
 
           
+
 
 
