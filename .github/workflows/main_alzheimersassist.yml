@@ -66,6 +66,8 @@ jobs:
           app-name: 'AlzheimersAssist'
           slot-name: 'Production'
           package: .
+          startup-command: 'npm start'
+
 
           
 
