@@ -4,7 +4,7 @@
   "description": "Welcome to **Alzheimer’s Assist** – an innovative, AI-powered platform designed to support individuals with Alzheimer’s and their families. This project combines facial recognition, emergency contact management, and a user-friendly dashboard to provide safety, connection, and peace of mind.",
   "main": "index.js",
   "scripts": {
-    "start":"npm run start --prefix backend",
+    "start": "node backend/server.js",
     "build": "npm install --prefix frontend && npm run build --prefix frontend && npm run build --prefix backend"
   },
   "repository": {
