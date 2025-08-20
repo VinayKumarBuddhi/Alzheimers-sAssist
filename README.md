@@ -31,6 +31,14 @@ The platform leverages modern web technologies and machine learning to create a 
 
 ---
 
+## ☁️ Deployment (Azure PaaS)
+- Deployed on **Microsoft Azure App Service (PaaS)** as a single application.
+- **Backend + Frontend together:** The Node.js/Express backend hosts the API and serves the built React frontend (static files) from the same App Service.
+- **Configuration:** Environment variables for secrets and runtime settings.
+- **CI/CD:** Automated builds and deployments via GitHub Actions.
+
+---
+
 ## 📂 Project Structure
 ```
 Alzheimer’sAssist/
@@ -62,6 +70,16 @@ Alzheimer’sAssist/
 
 ## 💡 Why Alzheimer’s Assist?
 Alzheimer’s Assist is more than just an app – it’s a lifeline for families. By combining AI, security, and thoughtful design, we aim to empower those living with Alzheimer’s and their loved ones.
+
+---
+
+## 🧑‍💻 What I Did
+- **Architected the system:** Designed the full-stack layout across frontend, backend, and ML components.
+- **Implemented backend APIs:** Built Express routes for authentication, family member management, and face operations.
+- **Integrated face recognition:** Wrote Python scripts (dlib) for embedding and comparison, and wired them to Node.js.
+- **Added secure auth:** Implemented JWT-based authentication and middleware protections.
+- **Developed the frontend:** Crafted React pages and components with Tailwind CSS for a clean UX.
+- **Set up deployment:** Deployed a single Azure App Service hosting the Node.js backend and serving the React build via Express; wired CI/CD with GitHub Actions.
 
 ---
 
